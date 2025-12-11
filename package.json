@@ -1,0 +1,13 @@
+{
+    "name": "games.yellowpanda.yellowlib.ui",
+    "author": "Yellow Panda",
+    "displayName": "Yellow Lib - UI",
+    "version": "1.0.1",
+    "unity": "6000.0",
+    "keywords": [],
+    "description": "Módulo de UI da Yellow Lib",
+    "samples": [],
+    "dependencies": {
+      "games.yellowpanda.yellowlib.core": "https://github.com/YP-Internal/yellowlib-core.git"
+    }
+}
