@@ -8,22 +8,23 @@ namespace YellowPanda.UI
     public class UIElement : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         #region General Settings
-
-        [Title("General Settings")]
+        const string GENERAL_SETTINGS = "General Settings";
+        [FoldoutGroup(GENERAL_SETTINGS)]
         [Tooltip("When true, Set GameObject active to false when finish the hide animation")]
         public bool disableObjectOnHide = true;
+        [FoldoutGroup(GENERAL_SETTINGS)]
         public bool disableObjectOnStart = false;
         [Space(15)]
 
         #endregion
 
         #region Behaviors Variables
-        [Title("Behaviors")]
         [ToggleLeft] public bool showBehavior;
         [BoxGroup("Show")]
         [ShowIf("@showBehavior")] public UiAnimation showAnimation;
         [BoxGroup("Show")]
         [ShowIf("@showBehavior")] public UnityEvent onShow;
+
 
         [ToggleLeft] public bool hideBehavior;
         [BoxGroup("Hide")]
@@ -36,7 +37,6 @@ namespace YellowPanda.UI
         [ShowIf("@clickBehavior")] public UiAnimation clickAnimation;
         [BoxGroup("Click")]
         [ShowIf("@clickBehavior")] public UnityEvent onPointerClick;
-
         [ToggleLeft] public bool downBehavior;
         [BoxGroup("Down")]
         [ShowIf("@downBehavior")] public UiAnimation downAnimation;
@@ -59,48 +59,53 @@ namespace YellowPanda.UI
         [BoxGroup("Exit")]
         [ShowIf("@exitBehavior")] public UiAnimation exitAnimation;
         [BoxGroup("Exit")]
+        
         [ShowIf("@exitBehavior")] public UnityEvent onPointerExit;
 
-        [BoxGroup("Show")]
-        [ShowIf("@showBehavior")]
-        [Button]
+
         #endregion
 
         #region Show / Hide Methods
+        
+        [BoxGroup("Show")]
+        [ShowIf("@showBehavior")]
+        [Button]
         void Show() => Show(null);
+        
         [BoxGroup("Show")]
         [ShowIf("@showBehavior")]
         [Button]
         public void Show(object parameters = null)
         {
-            gameObject.SetActive(true);
-
-            OnShow(parameters);
+            if (!gameObject.activeSelf)
+                gameObject.SetActive(true);
 
             if (showBehavior)
             {
-                if (showAnimation)
-                    showAnimation.Play();
+                PlayAnimation(showAnimation);
+
                 onShow.Invoke();
             }
+
+            OnShow(parameters);
         }
+        
         [BoxGroup("Hide")]
         [ShowIf("@hideBehavior")]
         [Button]
         void Hide() => Hide(null);
+        
         [BoxGroup("Hide")]
         [ShowIf("@hideBehavior")]
         [Button]
         public void Hide(object parameters = null)
         {
-            OnHide(parameters);
             if (hideBehavior)
             {
                 onHide.Invoke();
                 if (hideAnimation)
                 {
-                    if (hideAnimation)
-                        hideAnimation.Play();
+                    PlayAnimation(hideAnimation);
 
                     if (disableObjectOnHide)
                         hideAnimation.onStopAnimation.AddListener(DisableObjectWhenHide);
@@ -116,6 +121,8 @@ namespace YellowPanda.UI
                 if (disableObjectOnHide)
                     gameObject.SetActive(false);
             }
+
+            OnHide(parameters);
         }
 
         void DisableObjectWhenHide()
@@ -129,6 +136,7 @@ namespace YellowPanda.UI
         #endregion
 
         #region Pointer Events
+        
         [BoxGroup("Down")]
         [ShowIf("@" + nameof(downBehavior))]
         [Button]
@@ -137,10 +145,11 @@ namespace YellowPanda.UI
         {
             if (downBehavior)
             {
+                PlayAnimation(downAnimation);
                 onPointerDown.Invoke();
-                downAnimation?.Play();
             }
         }
+        
         [BoxGroup("Up")]
         [ShowIf("@" + nameof(upBehavior))]
         [Button]
@@ -149,36 +158,39 @@ namespace YellowPanda.UI
         {
             if (upBehavior)
             {
+                PlayAnimation(upAnimation);
                 onPointerUp.Invoke();
-                upAnimation?.Play();
             }
         }
         [BoxGroup("Enter")]
         [ShowIf("@" + nameof(enterBehavior))]
+        
         [Button]
         void PointerEnter() => OnPointerEnter(null);
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (enterBehavior)
             {
+                PlayAnimation(enterAnimation);
                 onPointerEnter.Invoke();
-                enterAnimation?.Play();
             }
         }
         [BoxGroup("Exit")]
         [ShowIf("@" + nameof(exitBehavior))]
+        
         [Button]
         void PointerExit() => OnPointerExit(null);
         public void OnPointerExit(PointerEventData eventData)
         {
             if (exitBehavior)
             {
+                PlayAnimation(exitAnimation);
                 onPointerExit.Invoke();
-                exitAnimation?.Play();
             }
         }
 
         [BoxGroup("Click")]
+        
         [ShowIf("@" + nameof(clickBehavior))]
         [Button]
         void PointerClick() => OnPointerClick(null);
@@ -188,7 +200,7 @@ namespace YellowPanda.UI
             if (clickBehavior)
             {
                 onPointerClick.Invoke();
-                clickAnimation?.Play();
+                PlayAnimation(clickAnimation);
             }
         }
 
@@ -196,13 +208,16 @@ namespace YellowPanda.UI
 
         #region Unity Methods
         protected virtual void Start()
-
         {
             if (disableObjectOnStart)
                 gameObject.SetActive(false);
         }
+        private void OnEnable()
+        {
+            Show();
+        }
         #endregion
-    
+
         #region Ui State
         [Space(15)]
         [Title("UI State")]
@@ -213,6 +228,28 @@ namespace YellowPanda.UI
             uiState.UpdateState(parameters);
         }
         #endregion
+
+        void PlayAnimation(UiAnimation animation)
+        {
+            if (animation)
+            {
+                StopAllAnimation();
+                animation.Play();
+            }
+        }
+        void StopAllAnimation()
+        {
+            showAnimation?.Stop();
+            hideAnimation?.Stop();
+
+            clickAnimation?.Stop();
+
+            enterAnimation?.Stop();
+            exitAnimation?.Stop();
+
+            downAnimation?.Stop();
+            upAnimation?.Stop();
+        }
     }
 }
 
