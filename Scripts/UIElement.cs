@@ -7,108 +7,165 @@ namespace YellowPanda.UI
 {
     public class UIElement : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
+        public enum UIBehaviorsEvent { Show, Hide, Click, Down, Up, Enter, Exit }
+
         #region General Settings
         const string GENERAL_SETTINGS = "General Settings";
         [FoldoutGroup(GENERAL_SETTINGS)]
+        [Tooltip("Object That keep the object animations. Is used when a new animation is automatic created")]
+        public GameObject animationObjectHolder;
+
+        [FoldoutGroup(GENERAL_SETTINGS)]
         [Tooltip("When true, Set GameObject active to false when finish the hide animation")]
         public bool disableObjectOnHide = true;
+
         [FoldoutGroup(GENERAL_SETTINGS)]
+        [Tooltip("When true, automatically disables the object on start")]
         public bool disableObjectOnStart = false;
-        [Space(15)]
 
         #endregion
 
         #region Behaviors Variables
-        [ToggleLeft] public bool showBehavior;
-        [BoxGroup("Show")]
-        [ShowIf("@showBehavior")] public UiAnimation showAnimation;
-        [BoxGroup("Show")]
-        [ShowIf("@showBehavior")] public UnityEvent onShow;
+        private void OnValidate()
+        {
+            showSettings.owner = this; showSettings.behavior = UIBehaviorsEvent.Show;
+            hideSettings.owner = this; hideSettings.behavior = UIBehaviorsEvent.Hide;
+            clickSettings.owner = this; clickSettings.behavior = UIBehaviorsEvent.Click;
+            downSettings.owner = this; downSettings.behavior = UIBehaviorsEvent.Down;
+            upSettings.owner = this; upSettings.behavior = UIBehaviorsEvent.Up;
+            enterSettings.owner = this; enterSettings.behavior = UIBehaviorsEvent.Enter;
+            exitSettings.owner = this; exitSettings.behavior = UIBehaviorsEvent.Exit;
+        }
 
+        [System.Serializable]
+        public class UIEventSettings
+        {
+            [HideInInspector] public UIElement owner;
+            [HideInInspector] public UIBehaviorsEvent behavior;
 
-        [ToggleLeft] public bool hideBehavior;
-        [BoxGroup("Hide")]
-        [ShowIf("@hideBehavior")] public UiAnimation hideAnimation;
-        [BoxGroup("Hide")]
-        [ShowIf("@hideBehavior")] public UnityEvent onHide;
+            void SetAnimation()
+            {
+                UiAnimationComponentFactory.CreateAnimation(owner, animationType, behavior);
+            }
+            [OnValueChanged(nameof(SetAnimation))]
+            public UiAnimationComponentFactory.UiAnimationTypes animationType;
 
-        [ToggleLeft] public bool clickBehavior;
-        [BoxGroup("Click")]
-        [ShowIf("@clickBehavior")] public UiAnimation clickAnimation;
-        [BoxGroup("Click")]
-        [ShowIf("@clickBehavior")] public UnityEvent onPointerClick;
-        [ToggleLeft] public bool downBehavior;
-        [BoxGroup("Down")]
-        [ShowIf("@downBehavior")] public UiAnimation downAnimation;
-        [BoxGroup("Down")]
-        [ShowIf("@downBehavior")] public UnityEvent onPointerDown;
+            public UiAnimation animation;
 
-        [ToggleLeft] public bool upBehavior;
-        [BoxGroup("Up")]
-        [ShowIf("@upBehavior")] public UiAnimation upAnimation;
-        [BoxGroup("Up")]
-        [ShowIf("@upBehavior")] public UnityEvent onPointerUp;
+            public UnityEvent onEvent;
+        }
 
-        [ToggleLeft] public bool enterBehavior;
-        [BoxGroup("Enter")]
-        [ShowIf("@enterBehavior")] public UiAnimation enterAnimation;
-        [BoxGroup("Enter")]
-        [ShowIf("@enterBehavior")] public UnityEvent onPointerEnter;
+        [ToggleLeft] public bool showEvent;
+        [ShowIf(nameof(showEvent))]
+        [BoxGroup("Show")] public UIEventSettings showSettings = new UIEventSettings();
+        [ToggleLeft] public bool hideEvent;
+        [ShowIf(nameof(hideEvent))]
+        [BoxGroup("Hide")] public UIEventSettings hideSettings = new UIEventSettings();
+        [ToggleLeft] public bool clickEvent;
+        [ShowIf(nameof(clickEvent))]
+        [BoxGroup("Click")] public UIEventSettings clickSettings = new UIEventSettings();
+        [ToggleLeft] public bool downEvent;
+        [ShowIf(nameof(downEvent))]
+        [BoxGroup("Down")] public UIEventSettings downSettings = new UIEventSettings();
+        [ToggleLeft] public bool upEvent;
+        [ShowIf(nameof(upEvent))]
+        [BoxGroup("Up")] public UIEventSettings upSettings = new UIEventSettings();
+        [ToggleLeft] public bool enterEvent;
+        [ShowIf(nameof(enterEvent))]
+        [BoxGroup("Enter")] public UIEventSettings enterSettings = new UIEventSettings();
+        [ToggleLeft] public bool exitEvent;
+        [ShowIf(nameof(exitEvent))]
+        [BoxGroup("Exit")] public UIEventSettings exitSettings = new UIEventSettings();
 
-        [ToggleLeft] public bool exitBehavior;
-        [BoxGroup("Exit")]
-        [ShowIf("@exitBehavior")] public UiAnimation exitAnimation;
-        [BoxGroup("Exit")]
-        
-        [ShowIf("@exitBehavior")] public UnityEvent onPointerExit;
-
+        public UiAnimation GetUiAnimation(UIBehaviorsEvent uiBehaviorsEvent)
+        {
+            return uiBehaviorsEvent switch
+            {
+                UIBehaviorsEvent.Show => showSettings.animation,
+                UIBehaviorsEvent.Hide => hideSettings.animation,
+                UIBehaviorsEvent.Click => clickSettings.animation,
+                UIBehaviorsEvent.Down => downSettings.animation,
+                UIBehaviorsEvent.Up => upSettings.animation,
+                UIBehaviorsEvent.Enter => enterSettings.animation,
+                UIBehaviorsEvent.Exit => exitSettings.animation,
+                _ => null,
+            };
+        }
+        public void SetUiAnimation(UIBehaviorsEvent uiBehaviorsEvent, UiAnimation animation)
+        {
+            switch (uiBehaviorsEvent)
+            {
+                case UIBehaviorsEvent.Show:
+                    showSettings.animation = animation;
+                    break;
+                case UIBehaviorsEvent.Hide:
+                    hideSettings.animation = animation;
+                    break;
+                case UIBehaviorsEvent.Click:
+                    clickSettings.animation = animation;
+                    break;
+                case UIBehaviorsEvent.Down:
+                    downSettings.animation = animation;
+                    break;
+                case UIBehaviorsEvent.Up:
+                    upSettings.animation = animation;
+                    break;
+                case UIBehaviorsEvent.Enter:
+                    enterSettings.animation = animation;
+                    break;
+                case UIBehaviorsEvent.Exit:
+                    exitSettings.animation = animation;
+                    break;
+            }
+        }
 
         #endregion
 
         #region Show / Hide Methods
-        
+
         [BoxGroup("Show")]
-        [ShowIf("@showBehavior")]
+        [ShowIf(nameof(showEvent))]
         [Button]
         void Show() => Show(null);
-        
+
         [BoxGroup("Show")]
-        [ShowIf("@showBehavior")]
+        [Tooltip("Call Show(object parameters = null) with custom paramaters")]
+        [ShowIf(nameof(showEvent))]
         [Button]
         public void Show(object parameters = null)
         {
             if (!gameObject.activeSelf)
                 gameObject.SetActive(true);
 
-            if (showBehavior)
+            if (showEvent)
             {
-                PlayAnimation(showAnimation);
-
-                onShow.Invoke();
+                PlayAnimation(showSettings.animation);
+                showSettings.onEvent?.Invoke();
             }
 
             OnShow(parameters);
         }
-        
+
         [BoxGroup("Hide")]
-        [ShowIf("@hideBehavior")]
+        [ShowIf(nameof(hideEvent))]
         [Button]
         void Hide() => Hide(null);
-        
+
         [BoxGroup("Hide")]
-        [ShowIf("@hideBehavior")]
+        [ShowIf(nameof(hideEvent))]
+        [Tooltip("Call Hide(object parameters = null) with custom paramaters")]
         [Button]
         public void Hide(object parameters = null)
         {
-            if (hideBehavior)
+            if (hideEvent)
             {
-                onHide.Invoke();
-                if (hideAnimation)
+                hideSettings.onEvent?.Invoke();
+                if (hideSettings.animation)
                 {
-                    PlayAnimation(hideAnimation);
+                    PlayAnimation(hideSettings.animation);
 
                     if (disableObjectOnHide)
-                        hideAnimation.onStopAnimation.AddListener(DisableObjectWhenHide);
+                        hideSettings.animation.onStopAnimation.AddListener(DisableObjectWhenHide);
                 }
                 else
                 {
@@ -128,7 +185,8 @@ namespace YellowPanda.UI
         void DisableObjectWhenHide()
         {
             gameObject.SetActive(false);
-            hideAnimation.onStopAnimation.RemoveListener(DisableObjectWhenHide);
+            if (hideSettings.animation)
+                hideSettings.animation.onStopAnimation.RemoveListener(DisableObjectWhenHide);
         }
 
         virtual protected void OnShow(object parameters = null) { }
@@ -136,71 +194,71 @@ namespace YellowPanda.UI
         #endregion
 
         #region Pointer Events
-        
+
         [BoxGroup("Down")]
-        [ShowIf("@" + nameof(downBehavior))]
+        [ShowIf(nameof(downEvent))]
         [Button]
         void PointerDown() => OnPointerDown(null);
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (downBehavior)
+            if (downEvent)
             {
-                PlayAnimation(downAnimation);
-                onPointerDown.Invoke();
+                PlayAnimation(downSettings.animation);
+                downSettings.onEvent?.Invoke();
             }
         }
-        
+
         [BoxGroup("Up")]
-        [ShowIf("@" + nameof(upBehavior))]
+        [ShowIf(nameof(upEvent))]
         [Button]
         void PointerUp() => OnPointerUp(null);
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (upBehavior)
+            if (upEvent)
             {
-                PlayAnimation(upAnimation);
-                onPointerUp.Invoke();
+                PlayAnimation(upSettings.animation);
+                upSettings.onEvent?.Invoke();
             }
         }
         [BoxGroup("Enter")]
-        [ShowIf("@" + nameof(enterBehavior))]
-        
+        [ShowIf(nameof(enterEvent))]
+
         [Button]
         void PointerEnter() => OnPointerEnter(null);
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (enterBehavior)
+            if (enterEvent)
             {
-                PlayAnimation(enterAnimation);
-                onPointerEnter.Invoke();
+                PlayAnimation(enterSettings.animation);
+                enterSettings.onEvent?.Invoke();
             }
         }
         [BoxGroup("Exit")]
-        [ShowIf("@" + nameof(exitBehavior))]
-        
+        [ShowIf(nameof(exitEvent))]
+
         [Button]
         void PointerExit() => OnPointerExit(null);
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (exitBehavior)
+            if (exitEvent)
             {
-                PlayAnimation(exitAnimation);
-                onPointerExit.Invoke();
+                PlayAnimation(exitSettings.animation);
+                exitSettings.onEvent?.Invoke();
             }
         }
 
         [BoxGroup("Click")]
-        
-        [ShowIf("@" + nameof(clickBehavior))]
+
+        [ShowIf(nameof(clickEvent))]
         [Button]
         void PointerClick() => OnPointerClick(null);
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (clickBehavior)
+            if (clickEvent)
             {
-                onPointerClick.Invoke();
-                PlayAnimation(clickAnimation);
+                clickSettings.onEvent?.Invoke();
+                PlayAnimation(clickSettings.animation);
             }
         }
 
@@ -239,17 +297,17 @@ namespace YellowPanda.UI
         }
         void StopAllAnimation()
         {
-            showAnimation?.Stop();
-            hideAnimation?.Stop();
+            showSettings.animation?.Stop();
+            hideSettings.animation?.Stop();
 
-            clickAnimation?.Stop();
+            clickSettings.animation?.Stop();
 
-            enterAnimation?.Stop();
-            exitAnimation?.Stop();
+            enterSettings.animation?.Stop();
+            exitSettings.animation?.Stop();
 
-            downAnimation?.Stop();
-            upAnimation?.Stop();
+            downSettings.animation?.Stop();
+            upSettings.animation?.Stop();
         }
+
     }
 }
-

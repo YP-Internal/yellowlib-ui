@@ -62,5 +62,6 @@ namespace YellowPanda.UI
         [Button]
         [ShowIf("CanInspectorStop")]
         public abstract void StopAnimation();
+        public abstract void Init(UIElement target);
     }
 }
