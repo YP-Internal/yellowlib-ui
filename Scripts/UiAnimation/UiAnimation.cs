@@ -18,9 +18,9 @@ namespace YellowPanda.UI
         public abstract float AnimationTime { get; }
         public abstract bool IsPlaying { get; }
 
-        [FoldoutGroup(EVENTS)]
+        [FoldoutGroup(EVENTS,3)]
         public UnityEvent onPlayAnimation;
-        [FoldoutGroup(EVENTS)]
+        [FoldoutGroup(EVENTS,3)]
         public UnityEvent onStopAnimation;
 
         IEnumerator animationDelayCoroutine;
@@ -63,5 +63,6 @@ namespace YellowPanda.UI
         [ShowIf("CanInspectorStop")]
         public abstract void StopAnimation();
         public abstract void Init(UIElement target);
+        public abstract void CreateAnimationData();
     }
 }

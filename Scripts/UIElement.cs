@@ -49,8 +49,7 @@ namespace YellowPanda.UI
             }
             [OnValueChanged(nameof(SetAnimation))]
             public UiAnimationComponentFactory.UiAnimationTypes animationType;
-
-            public UiAnimation animation;
+            [InlineEditor] public UiAnimation animation;
 
             public UnityEvent onEvent;
         }
@@ -91,32 +90,28 @@ namespace YellowPanda.UI
                 _ => null,
             };
         }
+
         public void SetUiAnimation(UIBehaviorsEvent uiBehaviorsEvent, UiAnimation animation)
         {
-            switch (uiBehaviorsEvent)
+            var settings = GetAnimationSettings(uiBehaviorsEvent);
+            if (settings.animation)
+                settings.animation.gameObject.SetActive(false);
+            settings.animation = animation;
+        }
+
+        public UIEventSettings GetAnimationSettings(UIBehaviorsEvent uiBehaviorsEvent)
+        {
+            return uiBehaviorsEvent switch
             {
-                case UIBehaviorsEvent.Show:
-                    showSettings.animation = animation;
-                    break;
-                case UIBehaviorsEvent.Hide:
-                    hideSettings.animation = animation;
-                    break;
-                case UIBehaviorsEvent.Click:
-                    clickSettings.animation = animation;
-                    break;
-                case UIBehaviorsEvent.Down:
-                    downSettings.animation = animation;
-                    break;
-                case UIBehaviorsEvent.Up:
-                    upSettings.animation = animation;
-                    break;
-                case UIBehaviorsEvent.Enter:
-                    enterSettings.animation = animation;
-                    break;
-                case UIBehaviorsEvent.Exit:
-                    exitSettings.animation = animation;
-                    break;
-            }
+                UIBehaviorsEvent.Show => showSettings,
+                UIBehaviorsEvent.Hide => hideSettings,
+                UIBehaviorsEvent.Click => clickSettings,
+                UIBehaviorsEvent.Down => downSettings,
+                UIBehaviorsEvent.Up => upSettings,
+                UIBehaviorsEvent.Enter => enterSettings,
+                UIBehaviorsEvent.Exit => exitSettings,
+                _ => throw new System.NotImplementedException(),
+            };
         }
 
         #endregion

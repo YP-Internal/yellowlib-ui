@@ -27,10 +27,10 @@ public static class UiAnimationComponentFactory
 
         if (!target.animationObjectHolder)
         {
-            target.animationObjectHolder = new GameObject($"{target.name} Animation Holder");
+            target.animationObjectHolder = new GameObject("Animations");
             target.animationObjectHolder.transform.SetParent(target.transform);
+            target.animationObjectHolder.transform.localPosition = Vector3.zero;
         }
-
 
         Transform animationObject = target.animationObjectHolder.transform.Find(gameObjectName);
 
@@ -40,6 +40,7 @@ public static class UiAnimationComponentFactory
         {
             animationObject = new GameObject(gameObjectName).transform;
             animationObject.SetParent(target.animationObjectHolder.transform);
+            animationObject.transform.localPosition = Vector3.zero;
         }
 
         if (animationObject.TryGetComponent(out UiAnimation animation))
@@ -49,7 +50,10 @@ public static class UiAnimationComponentFactory
             Type componentType = GetUiAnimationType(animationType);
             animationToAdd = animationObject.gameObject.AddComponent(componentType) as UiAnimation;
             animationToAdd.Init(target);
+            animationToAdd.CreateAnimationData();
         }
+
+        animationToAdd.gameObject.SetActive(true);
 
         target.SetUiAnimation(category, animationToAdd);
     }
