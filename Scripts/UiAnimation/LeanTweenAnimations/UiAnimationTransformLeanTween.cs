@@ -34,7 +34,6 @@ namespace YellowPanda.UI
             public Vector3 to;
         }
 
-        public class TransformTweenAnimationDataSO : OverridableVariableSO<TransformTweenAnimationData> { }
 
         [FoldoutGroup(ANIMATION_SETTINGS)]
         [SerializeField]
