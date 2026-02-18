@@ -1,5 +1,6 @@
 using System.Collections;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -18,15 +19,16 @@ namespace YellowPanda.UI
         public abstract float AnimationTime { get; }
         public abstract bool IsPlaying { get; }
 
-        [FoldoutGroup(EVENTS,3)]
+        [FoldoutGroup(EVENTS, 3)]
         public UnityEvent onPlayAnimation;
-        [FoldoutGroup(EVENTS,3)]
+        [FoldoutGroup(EVENTS, 3)]
         public UnityEvent onStopAnimation;
 
         IEnumerator animationDelayCoroutine;
         public void Play()
         {
             animationDelayCoroutine = AnimationDelayCoroutine();
+
             StartCoroutine(animationDelayCoroutine);
         }
         public void Stop()
@@ -63,6 +65,6 @@ namespace YellowPanda.UI
         [ShowIf("CanInspectorStop")]
         public abstract void StopAnimation();
         public abstract void Init(UIElement target);
-        public abstract void CreateAnimationData();
+        public abstract void CreateAsset(string path);
     }
 }

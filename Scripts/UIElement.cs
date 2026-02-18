@@ -1,4 +1,6 @@
+using System.Collections;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -45,34 +47,56 @@ namespace YellowPanda.UI
 
             void SetAnimation()
             {
-                UiAnimationComponentFactory.CreateAnimation(owner, animationType, behavior);
+                EditorApplication.delayCall += SetAnimationDelayedCall;
             }
+            void SetAnimationDelayedCall()
+            {
+                UiAnimationComponentFactory.CreateAnimation(owner, animationType, behavior);
+                EditorApplication.delayCall -= SetAnimationDelayedCall;
+            }
+
             [OnValueChanged(nameof(SetAnimation))]
             public UiAnimationComponentFactory.UiAnimationTypes animationType;
             [InlineEditor] public UiAnimation animation;
 
             public UnityEvent onEvent;
         }
+        void UpdateShowEvent()
+        {
+            UpdateEventState(showEvent, showSettings);
+            UpdateEventState(hideEvent, hideSettings);
+            UpdateEventState(clickEvent, clickSettings);
+            UpdateEventState(downEvent, downSettings);
+            UpdateEventState(upEvent, upSettings);
+            UpdateEventState(enterEvent, enterSettings);
+            UpdateEventState(exitEvent, exitSettings);
+        }
+        void UpdateEventState(bool enabled, UIEventSettings settings)
+        {
+            if (settings == null || settings.animation == null)
+                return;
 
-        [ToggleLeft] public bool showEvent;
+            settings.animation.gameObject.SetActive(enabled);
+        }
+        [ToggleLeft, OnValueChanged(nameof(UpdateShowEvent))] public bool showEvent;
         [ShowIf(nameof(showEvent))]
         [BoxGroup("Show")] public UIEventSettings showSettings = new UIEventSettings();
-        [ToggleLeft] public bool hideEvent;
+        [ToggleLeft, OnValueChanged(nameof(UpdateShowEvent))] public bool hideEvent;
         [ShowIf(nameof(hideEvent))]
         [BoxGroup("Hide")] public UIEventSettings hideSettings = new UIEventSettings();
-        [ToggleLeft] public bool clickEvent;
+        [ToggleLeft, OnValueChanged(nameof(UpdateShowEvent))] public bool clickEvent;
         [ShowIf(nameof(clickEvent))]
         [BoxGroup("Click")] public UIEventSettings clickSettings = new UIEventSettings();
-        [ToggleLeft] public bool downEvent;
+        [ToggleLeft, OnValueChanged(nameof(UpdateShowEvent))] public bool downEvent;
         [ShowIf(nameof(downEvent))]
         [BoxGroup("Down")] public UIEventSettings downSettings = new UIEventSettings();
-        [ToggleLeft] public bool upEvent;
+        [ToggleLeft, OnValueChanged(nameof(UpdateShowEvent))] public bool upEvent;
         [ShowIf(nameof(upEvent))]
         [BoxGroup("Up")] public UIEventSettings upSettings = new UIEventSettings();
-        [ToggleLeft] public bool enterEvent;
+        [ToggleLeft, OnValueChanged(nameof(UpdateShowEvent))] public bool enterEvent;
         [ShowIf(nameof(enterEvent))]
         [BoxGroup("Enter")] public UIEventSettings enterSettings = new UIEventSettings();
-        [ToggleLeft] public bool exitEvent;
+        [ToggleLeft, OnValueChanged(nameof(UpdateShowEvent))] public bool exitEvent;
         [ShowIf(nameof(exitEvent))]
         [BoxGroup("Exit")] public UIEventSettings exitSettings = new UIEventSettings();
 

@@ -2,23 +2,28 @@ using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public enum EaseType { LeanTweenType, AnimationCurve }
-
-[Serializable]
-public class TweenAnimationData
+namespace YellowPanda.UI
 {
-    public float animationTime;
-    public EaseType easeType;
+    public enum EaseType { LeanTweenType, AnimationCurve }
 
-    [ShowIf("@easeType == EaseType.AnimationCurve")]
-    public AnimationCurve animationCurve;
-    [ShowIf("@easeType == EaseType.LeanTweenType")]
-    public LeanTweenType leanTweenType;
+    [Serializable]
+    public class TweenAnimationData
+    {
+        public float animationTime;
+        public EaseType easeType;
 
-    public bool loop;
-    public bool useLoopCounts;
-    [ShowIf("@loop && useLoopCounts")]
-    public int loopCount;
-    public bool returnToOriginalValueOnAnimationEnd;
+        [ShowIf("@easeType == EaseType.AnimationCurve")]
+        public AnimationCurve animationCurve;
+        [ShowIf("@easeType == EaseType.LeanTweenType")]
+        public LeanTweenType leanTweenType;
 
+        public bool loop;
+        public bool useLoopCounts;
+        [ShowIf("@loop")]
+        public LeanTweenType loopType;
+        [ShowIf("@loop && useLoopCounts")]
+        public int loopCount;
+        public bool returnToOriginalValueOnAnimationEnd;
+
+    }
 }

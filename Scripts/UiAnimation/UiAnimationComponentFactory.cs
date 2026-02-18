@@ -50,11 +50,12 @@ public static class UiAnimationComponentFactory
             Type componentType = GetUiAnimationType(animationType);
             animationToAdd = animationObject.gameObject.AddComponent(componentType) as UiAnimation;
             animationToAdd.Init(target);
-            animationToAdd.CreateAnimationData();
+            //animationToAdd.CreateAnimationData();
         }
 
         animationToAdd.gameObject.SetActive(true);
 
         target.SetUiAnimation(category, animationToAdd);
     }
+
 }
