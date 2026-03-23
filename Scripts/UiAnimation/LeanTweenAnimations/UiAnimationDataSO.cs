@@ -1,10 +1,10 @@
 using UnityEngine;
 
-namespace YellowPanda.UI
+namespace YellowPanda.UI.LeanTweenUI
 {
     public class UiAnimationTransformLeanTweenData : ScriptableObject
     {
-        public UiAnimationTransformLeanTween.TransformTweenAnimationData data;
+        //public UiAnimationTransformLeanTween.TransformTweenAnimationData data;
     }
 }
 

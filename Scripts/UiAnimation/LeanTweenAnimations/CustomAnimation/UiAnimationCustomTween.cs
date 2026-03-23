@@ -1,33 +1,28 @@
 using UnityEngine;
+using YellowPanda.Core.AssetCreation;
 
-namespace YellowPanda.UI
+namespace YellowPanda.UI.LeanTweenUI
 {
-    public class UiAnimationCustomTween : UiAnimation
+    public abstract class UiAnimationCustomTween<DataSO, Data> : UiAnimation where Data : TweenAnimationData where DataSO : OverridableVariableSO<Data>
     {
-        public override float AnimationTime => customEvaluate.Time;
+        [SerializeField] protected OverridableVariable<Data, DataSO> data;
+        public override float AnimationTime => data.Value.animationTime;
         public override bool IsPlaying => isPlaying;
         bool isPlaying;
-        [SerializeField] CustomLeanTweenEvaluate customEvaluate;
-
-        public override void CreateAsset(string path)
-        {
-            throw new System.NotImplementedException();
-        }
 
         public override void Init(UIElement target) { }
         public override void PlayAnimation()
         {
             isPlaying = true;
 
+            Data _data = data.Value;
+
             LeanTween.value(gameObject, 0f, 1f, AnimationTime)
-                .setOnUpdate((float val) =>
+                .setOnUpdate((float t) =>
                 {
-                    customEvaluate.Evaluate(val);
+                    Evaluate(t, _data);
                 })
-                .setOnComplete(() =>
-                {
-                    Stop();
-                });
+                .setOnComplete(Stop);
         }
 
         public override void StopAnimation()
@@ -35,5 +30,7 @@ namespace YellowPanda.UI
             isPlaying = false;
             LeanTween.cancel(gameObject);
         }
+
+        protected abstract void Evaluate(float t, Data data);
     }
 }

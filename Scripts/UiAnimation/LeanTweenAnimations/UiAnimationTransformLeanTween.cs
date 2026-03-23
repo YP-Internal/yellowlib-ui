@@ -3,11 +3,11 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using YellowPanda.Core.AssetCreation;
 
-namespace YellowPanda.UI
+namespace YellowPanda.UI.LeanTweenUI
 {
     public class UiAnimationTransformLeanTween : UiAnimation
     {
-        public override float AnimationTime => 1;// overrideAnimationData.animationTime;
+        public override float AnimationTime => animationData.Value.animationTime;
         public override bool IsPlaying => isPlaying;
         protected override bool CanInspectorPlay => Application.isPlaying;
         protected override bool CanInspectorStop => base.CanInspectorStop && Application.isPlaying;
@@ -16,23 +16,6 @@ namespace YellowPanda.UI
         [FoldoutGroup(ANIMATION_SETTINGS)]
         public bool isPlaying;
 
-        public enum TransformTweenType
-        {
-            Scale,
-            Position,
-            LocalPosition,
-            AnchoredPosition,
-            Rotate,
-        }
-        [Serializable]
-        public class TransformTweenAnimationData : TweenAnimationData
-        {
-            [BoxGroup("TransformTween", order: 0)]
-            public TransformTweenType tweenType;
-
-            [BoxGroup("TransformTween", order: 0)]
-            public Vector3 to;
-        }
 
 
         [FoldoutGroup(ANIMATION_SETTINGS)]
@@ -43,7 +26,7 @@ namespace YellowPanda.UI
         OverridableVariable<TransformTweenAnimationData, TransformTweenAnimationDataSO> animationData;
 
 
-        
+
         Vector3 originalValue;
         void Start()
         {
@@ -150,11 +133,6 @@ namespace YellowPanda.UI
         public override void Init(UIElement target)
         {
             this.target = target.transform as RectTransform;
-        }
-
-        public override void CreateAsset(string path)
-        {
-            throw new NotImplementedException();
         }
     }
 }

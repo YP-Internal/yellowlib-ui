@@ -2,7 +2,7 @@ using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace YellowPanda.UI
+namespace YellowPanda.UI.LeanTweenUI
 {
     public enum EaseType { LeanTweenType, AnimationCurve }
 

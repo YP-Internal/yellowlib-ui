@@ -1,3 +1,26 @@
-using static YellowPanda.UI.UiAnimationTransformLeanTween;
+using Sirenix.OdinInspector;
+using System;
+using UnityEngine;
 
-public class TransformTweenAnimationDataSO : OverridableVariableSO<TransformTweenAnimationData> { }
+namespace YellowPanda.UI.LeanTweenUI
+{
+    public class TransformTweenAnimationDataSO : OverridableVariableSO<TransformTweenAnimationData> { }
+
+    [Serializable]
+    public class TransformTweenAnimationData : TweenAnimationData
+    {
+        [BoxGroup("TransformTween", order: 0)]
+        public TransformTweenType tweenType;
+
+        [BoxGroup("TransformTween", order: 0)]
+        public Vector3 to;
+    }
+    public enum TransformTweenType
+    {
+        Scale,
+        Position,
+        LocalPosition,
+        AnchoredPosition,
+        Rotate,
+    }
+}

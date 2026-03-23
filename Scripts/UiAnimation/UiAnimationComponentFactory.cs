@@ -3,15 +3,18 @@ using Codice.CM.SEIDInfo;
 using UnityEditorInternal;
 using UnityEngine;
 using YellowPanda.UI;
+using YellowPanda.UI.LeanTweenUI;
 
 public static class UiAnimationComponentFactory
 {
-    public enum UiAnimationTypes { None, LeanTween }
+    public enum UiAnimationTypes { None, LeanTweenTransform, LeanTweenColor, LeanTweenCanvasGroup }
     static Type GetUiAnimationType(UiAnimationTypes animationType)
     {
         return animationType switch
         {
-            UiAnimationTypes.LeanTween => typeof(UiAnimationTransformLeanTween),
+            UiAnimationTypes.LeanTweenTransform => typeof(UiAnimationTransformLeanTween),
+            UiAnimationTypes.LeanTweenColor => typeof(UiAnimationColorLeanTween),
+            UiAnimationTypes.LeanTweenCanvasGroup => typeof(UiAnimationCanvasGroupLeanTween),
             _ => throw new ArgumentException($"Unknown animation type: {animationType}")
         };
     }
@@ -50,7 +53,6 @@ public static class UiAnimationComponentFactory
             Type componentType = GetUiAnimationType(animationType);
             animationToAdd = animationObject.gameObject.AddComponent(componentType) as UiAnimation;
             animationToAdd.Init(target);
-            //animationToAdd.CreateAnimationData();
         }
 
         animationToAdd.gameObject.SetActive(true);
