@@ -7,6 +7,9 @@ namespace YellowPanda.UI.LeanTweenUI
     [System.Serializable]
     public class TweenAnimationColorData : TweenAnimationData
     {
-        public Gradient color;
+        public bool useGradient;
+        public Gradient gradient;
+        public Color from;
+        public Color to;
     }
 }

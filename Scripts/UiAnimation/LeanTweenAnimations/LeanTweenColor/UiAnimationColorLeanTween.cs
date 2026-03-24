@@ -17,7 +17,7 @@ namespace YellowPanda.UI.LeanTweenUI
         }
         protected override void Evaluate(float t, TweenAnimationColorData data)
         {
-            graphic.color = data.color.Evaluate(t);
+            graphic.color = data.useGradient ? data.gradient.Evaluate(t) : Color.Lerp(data.from, data.to, t);
         }
     }
 
