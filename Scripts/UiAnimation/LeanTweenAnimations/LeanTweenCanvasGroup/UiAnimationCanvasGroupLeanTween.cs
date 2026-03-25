@@ -4,7 +4,7 @@ using YellowPanda.UI;
 
 namespace YellowPanda.UI.LeanTweenUI
 {
-    public class UiAnimationCanvasGroupLeanTween : UiAnimationCustomTween<TweenAnimationCanvasGroupDataSO, TweenAnimationCanvasGroupData>
+    public class UiAnimationCanvasGroupLeanTween : LeanTweenUiAnimation<TweenAnimationCanvasGroupDataSO, TweenAnimationCanvasGroupData>
     {
         [SerializeField] CanvasGroup canvasGroup;
         public override void Init(UIElement target)

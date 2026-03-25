@@ -51,14 +51,17 @@ namespace YellowPanda.UI
             }
             void SetAnimationDelayedCall()
             {
-                UiAnimationComponentFactory.CreateAnimation(owner, animationType, behavior);
+                UiAnimationComponentFactory.CreateOrSetAnimation(owner, animationType, behavior);
                 EditorApplication.delayCall -= SetAnimationDelayedCall;
             }
 
             [OnValueChanged(nameof(SetAnimation))]
             public UiAnimationComponentFactory.UiAnimationTypes animationType;
-            [InlineEditor] public UiAnimation animation;
+            [InlineEditor, ShowIf(nameof(IsValidAnimation))] public UiAnimation animation;
+            bool IsValidAnimation => animationType != UiAnimationComponentFactory.UiAnimationTypes.None;
 
+            [SerializeField, HorizontalGroup("Event", Width = 80), ToggleLeft] bool useEvent;
+            [HorizontalGroup("Event"), ShowIf(nameof(useEvent))]
             public UnityEvent onEvent;
         }
         void UpdateShowEvent()
@@ -144,14 +147,11 @@ namespace YellowPanda.UI
 
         [BoxGroup("Show")]
         [ShowIf(nameof(showEvent))]
-        [Button]
-        void Show() => Show(null);
 
         [BoxGroup("Show")]
-        [Tooltip("Call Show(object parameters = null) with custom paramaters")]
         [ShowIf(nameof(showEvent))]
         [Button]
-        public void Show(object parameters = null)
+        public void Show()
         {
             if (!gameObject.activeSelf)
                 gameObject.SetActive(true);
@@ -162,19 +162,16 @@ namespace YellowPanda.UI
                 showSettings.onEvent?.Invoke();
             }
 
-            OnShow(parameters);
+            OnShow();
         }
 
         [BoxGroup("Hide")]
         [ShowIf(nameof(hideEvent))]
-        [Button]
-        void Hide() => Hide(null);
 
         [BoxGroup("Hide")]
         [ShowIf(nameof(hideEvent))]
-        [Tooltip("Call Hide(object parameters = null) with custom paramaters")]
         [Button]
-        public void Hide(object parameters = null)
+        public void Hide()
         {
             if (hideEvent)
             {
@@ -198,7 +195,7 @@ namespace YellowPanda.UI
                     gameObject.SetActive(false);
             }
 
-            OnHide(parameters);
+            OnHide();
         }
 
         void DisableObjectWhenHide()
@@ -208,8 +205,8 @@ namespace YellowPanda.UI
                 hideSettings.animation.onStopAnimation.RemoveListener(DisableObjectWhenHide);
         }
 
-        virtual protected void OnShow(object parameters = null) { }
-        virtual protected void OnHide(object parameters = null) { }
+        virtual protected void OnShow() { }
+        virtual protected void OnHide() { }
         #endregion
 
         #region Pointer Events

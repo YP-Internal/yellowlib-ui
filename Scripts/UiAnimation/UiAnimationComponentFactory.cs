@@ -6,7 +6,7 @@ using YellowPanda.UI.LeanTweenUI;
 
 public static class UiAnimationComponentFactory
 {
-    public enum UiAnimationTypes { None, LeanTweenTransform, LeanTweenColor, LeanTweenCanvasGroup, Animator }
+    public enum UiAnimationTypes { None, LeanTweenTransform, LeanTweenColor, LeanTweenCanvasGroup, Animator, Custom }
     static Type GetUiAnimationType(UiAnimationTypes animationType)
     {
         return animationType switch
@@ -18,11 +18,19 @@ public static class UiAnimationComponentFactory
             _ => throw new ArgumentException($"Unknown animation type: {animationType}")
         };
     }
-    public static void CreateAnimation(UIElement target, UiAnimationTypes animationType, UIElement.UIBehaviorsEvent category)
+    /// <summary>
+    /// Instantiate a GameObject, if needed in and assign a UIAnimation script to it.
+    /// </summary>
+    public static void CreateOrSetAnimation(UIElement target, UiAnimationTypes animationType, UIElement.UIBehaviorsEvent category)
     {
         if (animationType == UiAnimationTypes.None)
         {
             target.SetUiAnimation(category, null);
+            return;
+        }
+
+        if (animationType == UiAnimationTypes.Custom)
+        {
             return;
         }
 
