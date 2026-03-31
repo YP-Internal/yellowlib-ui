@@ -1,7 +1,7 @@
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
-using YellowPanda.Core.AssetCreation;
+using YellowPanda.AssetCreation;
 
 namespace YellowPanda.UI.LeanTweenUI
 {

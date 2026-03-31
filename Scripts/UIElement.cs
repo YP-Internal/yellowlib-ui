@@ -47,12 +47,16 @@ namespace YellowPanda.UI
 
             void SetAnimation()
             {
+#if UNITY_EDITOR
                 EditorApplication.delayCall += SetAnimationDelayedCall;
+#endif
             }
             void SetAnimationDelayedCall()
             {
                 UiAnimationComponentFactory.CreateOrSetAnimation(owner, animationType, behavior);
+#if UNITY_EDITOR
                 EditorApplication.delayCall -= SetAnimationDelayedCall;
+#endif
             }
 
             [OnValueChanged(nameof(SetAnimation))]

@@ -1,5 +1,5 @@
 using UnityEngine;
-using YellowPanda.Core.AssetCreation;
+using YellowPanda.AssetCreation;
 
 namespace YellowPanda.UI.AnimatorUI
 {
