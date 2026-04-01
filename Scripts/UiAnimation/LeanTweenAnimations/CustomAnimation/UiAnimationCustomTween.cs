@@ -28,6 +28,7 @@ namespace YellowPanda.UI.LeanTweenUI
                .setDelay(delay)
                .setOnComplete(() =>
                {
+                   isPlaying = false;
                    Stop();
                });
 

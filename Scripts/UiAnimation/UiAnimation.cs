@@ -27,6 +27,8 @@ namespace YellowPanda.UI
         IEnumerator animationDelayCoroutine;
         public void Play()
         {
+            if (IsPlaying) return;
+
             animationDelayCoroutine = AnimationDelayCoroutine();
 
             StartCoroutine(animationDelayCoroutine);
