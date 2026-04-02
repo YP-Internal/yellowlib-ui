@@ -13,6 +13,8 @@ namespace YellowPanda.UI.LeanTweenUI
     {
         [Range(0, 1)] public float finalAlpha;
         [Range(0, 1)] public float startAlpha;
+        public bool onStopBlockRaycast;
+        public bool onPlayBlockRaycast;
     }
 
 }

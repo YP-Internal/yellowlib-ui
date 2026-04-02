@@ -21,5 +21,16 @@ namespace YellowPanda.UI.LeanTweenUI
             canvasGroup.alpha = Mathf.Lerp(data.startAlpha, data.finalAlpha, t);
         }
 
+        public override void PlayAnimation()
+        {
+            base.PlayAnimation();
+            canvasGroup.blocksRaycasts = data.Value.onPlayBlockRaycast;
+        }
+
+        public override void StopAnimation()
+        {
+            base.StopAnimation();
+            canvasGroup.blocksRaycasts = data.Value.onStopBlockRaycast;
+        }
     }
 }
