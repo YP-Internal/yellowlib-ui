@@ -224,7 +224,7 @@ namespace YellowPanda.UI
         [BoxGroup("Down")]
         [ShowIf(nameof(downEvent))]
         [Button]
-        void PointerDown() => OnPointerDown(null);
+        public void PointerDown() => OnPointerDown(null);
         public void OnPointerDown(PointerEventData eventData)
         {
             downSettings.onEvent?.Invoke();
@@ -237,7 +237,7 @@ namespace YellowPanda.UI
         [BoxGroup("Up")]
         [ShowIf(nameof(upEvent))]
         [Button]
-        void PointerUp() => OnPointerUp(null);
+        public void PointerUp() => OnPointerUp(null);
         public void OnPointerUp(PointerEventData eventData)
         {
             upSettings.onEvent?.Invoke();
@@ -250,7 +250,7 @@ namespace YellowPanda.UI
         [ShowIf(nameof(enterEvent))]
 
         [Button]
-        void PointerEnter() => OnPointerEnter(null);
+        public void PointerEnter() => OnPointerEnter(null);
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (enterEvent)
@@ -263,7 +263,7 @@ namespace YellowPanda.UI
         [ShowIf(nameof(exitEvent))]
 
         [Button]
-        void PointerExit() => OnPointerExit(null);
+        public void PointerExit() => OnPointerExit(null);
         public void OnPointerExit(PointerEventData eventData)
         {
             exitSettings.onEvent?.Invoke();
@@ -278,7 +278,7 @@ namespace YellowPanda.UI
 
         [ShowIf(nameof(clickEvent))]
         [Button]
-        void PointerClick() => OnPointerClick(null);
+        public void PointerClick() => OnPointerClick(null);
 
         public void OnPointerClick(PointerEventData eventData)
         {
