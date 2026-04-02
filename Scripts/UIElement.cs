@@ -25,6 +25,8 @@ namespace YellowPanda.UI
         [Tooltip("When true, automatically disables the object on start")]
         public bool disableObjectOnStart = false;
 
+        public bool IsShowing { get; private set; }
+
         #endregion
 
         #region Behaviors Variables
@@ -157,15 +159,17 @@ namespace YellowPanda.UI
         [Button]
         public void Show()
         {
+            showSettings.onEvent?.Invoke();
+
             if (!gameObject.activeSelf)
                 gameObject.SetActive(true);
 
             if (showEvent)
             {
                 PlayAnimation(showSettings.animation);
-                showSettings.onEvent?.Invoke();
             }
 
+            IsShowing = true;
             OnShow();
         }
 
@@ -177,9 +181,10 @@ namespace YellowPanda.UI
         [Button]
         public void Hide()
         {
+            hideSettings.onEvent?.Invoke();
+
             if (hideEvent)
             {
-                hideSettings.onEvent?.Invoke();
                 if (hideSettings.animation)
                 {
                     PlayAnimation(hideSettings.animation);
@@ -199,6 +204,7 @@ namespace YellowPanda.UI
                     gameObject.SetActive(false);
             }
 
+            IsShowing = false;
             OnHide();
         }
 
@@ -221,10 +227,10 @@ namespace YellowPanda.UI
         void PointerDown() => OnPointerDown(null);
         public void OnPointerDown(PointerEventData eventData)
         {
+            downSettings.onEvent?.Invoke();
             if (downEvent)
             {
                 PlayAnimation(downSettings.animation);
-                downSettings.onEvent?.Invoke();
             }
         }
 
@@ -234,10 +240,10 @@ namespace YellowPanda.UI
         void PointerUp() => OnPointerUp(null);
         public void OnPointerUp(PointerEventData eventData)
         {
+            upSettings.onEvent?.Invoke();
             if (upEvent)
             {
                 PlayAnimation(upSettings.animation);
-                upSettings.onEvent?.Invoke();
             }
         }
         [BoxGroup("Enter")]
@@ -260,10 +266,11 @@ namespace YellowPanda.UI
         void PointerExit() => OnPointerExit(null);
         public void OnPointerExit(PointerEventData eventData)
         {
+            exitSettings.onEvent?.Invoke();
+
             if (exitEvent)
             {
                 PlayAnimation(exitSettings.animation);
-                exitSettings.onEvent?.Invoke();
             }
         }
 
@@ -275,9 +282,9 @@ namespace YellowPanda.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            clickSettings.onEvent?.Invoke();
             if (clickEvent)
             {
-                clickSettings.onEvent?.Invoke();
                 PlayAnimation(clickSettings.animation);
             }
         }
