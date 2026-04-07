@@ -25,7 +25,7 @@ namespace YellowPanda.UI
         [Tooltip("When true, automatically disables the object on start")]
         public bool disableObjectOnStart = false;
         [FoldoutGroup(GENERAL_SETTINGS)]
-        public bool showElementObEnable = false;
+        public bool showElementOnEnable = false;
 
         public bool IsShowing { get; private set; }
 
@@ -301,7 +301,7 @@ namespace YellowPanda.UI
         }
         private void OnEnable()
         {
-            if (showElementObEnable)
+            if (showElementOnEnable)
                 Show();
         }
         #endregion
