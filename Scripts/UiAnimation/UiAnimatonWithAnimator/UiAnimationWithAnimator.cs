@@ -9,8 +9,7 @@ namespace YellowPanda.UI.AnimatorUI
         [SerializeField] OverridableVariable<UiAnimatonWithAnimatorData, UiAnimatonWithAnimatorDataSO> data;
         public override float AnimationTime => animator.GetCurrentAnimatorClipInfo(0).Length;
 
-        public override bool IsPlaying => animator.gameObject.activeInHierarchy;
-
+        public override bool IsPlaying => false;
         public override void Init(UIElement target)
         {
             target.TryGetComponent(out animator);
